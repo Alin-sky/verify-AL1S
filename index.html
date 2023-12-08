@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AL-1S自助解禁系统</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #141414;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    flex-wrap: wrap;
+
+  }
+
+
+  .container .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 65vw;
+    height: 85vh;
+    background-color: rgb(55, 55, 55);
+    border-radius: 30px;
+    overflow: hidden;
+    z-index: 0;
+    /* 确保卡片在背景之上 */
+  }
+
+  .container .card::before {
+    content: '';
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    transform: translate(-50%, -50%);
+    background: radial-gradient(var(--clr), transparent, transparent);
+    width: 700px;
+    height: 700px;
+    opacity: 0;
+    z-index: -10;
+    /* 设置z-index确保光晕效果在输入框之下 */
+    transition: .5s, top 0, left：0;
+  }
+
+  .container .card:hover::before {
+    opacity: 1;
+    z-index: -10;
+    /* 光晕效果在卡片内容之下 */
+  }
+
+  .container .card::after {
+    content: '';
+    position: absolute;
+    inset: 0.5vh;
+    border-radius: 30px;
+    background-color: rgba(45, 45, 45, .75);
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #121212;
+  }
+
+  .input-field,
+  .submit-btn {
+    position: relative;
+    width: 40vw;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 12px;
+    border: 1px solid #000000;
+    background-color: rgb(101, 101, 101);
+    font-size: 16px;
+    z-index: 10;
+  }
+
+
+  .submit-btn {
+    position: relative;
+    background-color: #4ddb4d;
+    width: 40vw;
+    padding: 10px;
+    margin: 10px 0;
+    color: rgb(15, 0, 0);
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .submit-btn:disabled {
+    background-color: #825c5c;
+  }
+
+  label {
+    display: block;
+    margin-top: 20px;
+  }
+
+  h2 {
+    color: rgb(246, 246, 246);
+    /* 字体颜色，可根据需要更改 */
+    text-align: center;
+    /* 文本居中 */
+    position: relative;
+    z-index: 10;
+  }
+
+  h5 {
+    color: rgb(247, 157, 157);
+    /* 字体颜色，可根据需要更改 */
+    text-align: center;
+    /* 文本居中 */
+    position: relative;
+    z-index: 10;
+  }
+</style>
+
+
+<body>
+  <div class="container">
+    <div class="card" style="--clr: rgb(0, 51, 255);">
+      <form id="survey-form">
+
+        <label for="question1">
+          <h2>
+            请问需要了解什么而加群:
+          </h2>
+        </label>
+
+        <input type="text" id="question1" name="question1" class="input-field">
+        <br>
+
+        <label for="question2">
+          <h2>
+            请问是从何处了解到本群:
+          </h2>
+        </label>
+
+        <input type="text" id="question2" name="question2" class="input-field">
+        <br>
+
+
+        <div id="qqs" style="display:none;">
+          <h2>
+            请填写QQ账号:
+            <h5>
+              填写后会自动解禁
+            </h5>
+          </h2>
+        </div>
+
+
+        <label for="name" id="nameField" class="input-field" style="display:none;">
+        </label>
+
+
+        <input type="text" id="name" name="name" class="input-field" style="display:none;">
+
+        <br>
+        <button type="submit" id="submit" class="submit-btn" style="display:none;" disabled>提交</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const cards = document.querySelectorAll('.card')
+    cards.forEach(card => {
+      card.onmousemove = function (e) {
+        const x = e.pageX - card.offsetLeft,
+          y = e.pageY - card.offsetTop
+        card.style.setProperty('--x', x + 'px')
+        card.style.setProperty('--y', y + 'px')
+      }
+    })
+  </script>
+  <script>
+    document.getElementById('submit').addEventListener('click', function () {
+      alert('已提交！');
+    });
+
+
+    function main(question1, question2, qqNumber) {
+      var formData = {
+        question1: question1,
+        question2: question2,
+        qqNumber: qqNumber
+      };
+
+      fetch('http://124.221.198.113:6000/save-json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Success:', data);
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+      document.getElementById('submit').style.display = 'none';
+
+    }
+
+
+
+
+
+
+    window.onload = function () {
+      // 获取元素
+      var question1 = document.getElementById('question1');
+      var question2 = document.getElementById('question2');
+      var nameField = document.getElementById('name');
+      var submitBtn = document.getElementById('submit');
+      var qq = document.getElementById('qqs')
+      // 检查问题框是否都已填写
+      function checkQuestions() {
+        if (question1.value && question2.value) {
+          nameField.style.display = 'block';
+          submitBtn.style.display = 'block';
+          qq.style.display = 'block';
+        } else {
+          nameField.style.display = 'none';
+          submitBtn.style.display = 'none';
+          qq.style.display = 'none';
+        }
+      }
+
+      // 设置问题框的事件监听
+      question1.oninput = checkQuestions;
+      question2.oninput = checkQuestions;
+
+      // 检查姓名输入框是否已填写
+      nameField.oninput = function () {
+        submitBtn.disabled = !nameField.value;
+      };
+
+
+      var form = document.getElementById('survey-form');
+      form.onsubmit = function (event) {
+        event.preventDefault(); // 防止表单默认提交
+        main(question1.value, question2.value, nameField.value);
+      };
+    };
+
+  </script>
+</body>
+
+</html>
