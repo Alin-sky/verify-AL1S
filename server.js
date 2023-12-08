@@ -11,9 +11,11 @@ app.use(cors());
 app.post('/save-json', (req, res) => {
   const { qqNumber, ...dataToSave } = req.body;
   const filePath = `${qqNumber}.json`;
-  const targetUrl = `http://alin.highmore.tk:11451/unban?qq=${qqNumber}`;
+  const targetUrl = `机器人ip:端口/unban?qq=${qqNumber}`;
   console.log(qqNumber);
   // 先发起GET请求
+
+  
   http.get(targetUrl, (response) => { // 这里添加了 response 参数
     let responseData = '';
     // 接收数据
